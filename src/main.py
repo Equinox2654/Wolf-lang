@@ -1,6 +1,8 @@
 import re
 from sys import argv
 from os.path import isfile
+from variables import check_and_store_vars
+from built_in_functions import wolf_print
 
 variables = {}
 
@@ -17,21 +19,9 @@ def main():
         new_lines.append(line.strip().strip("\n"))
     for line in new_lines:
         if re.search(r'^var ', line):
-            match = re.match(r'^var (\w+)\s*=\s*(.*)', line)
-            if match:
-                var = match.group(1)
-                value = match.group(2).strip('"')
-                variables[var] = value
+            check_and_store_vars(line, variables)
         if re.search(r'^print\((.*)\)', line):
-            match = re.match(r'^print\((.*)\)', line)
-            if match:
-                string = match.group(1)
-                if re.search(r'(.*)', string):
-                    print(string.strip('"'))
-                elif string in variables:
-                    print(variables[string])
-                else:
-                    raise Exception(f"Variable does not exist or invalid string {new_lines.index(line)}")
+            wolf_print(line, variables)
 
 if __name__ == "__main__":
     main()
